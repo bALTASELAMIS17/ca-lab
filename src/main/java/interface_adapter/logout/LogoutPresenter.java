@@ -39,6 +39,7 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         // 2. set the username in the state to the empty string
         // 3. firePropertyChanged so that the View that is listening is updated.
         final LoggedInState loggedInState = loggedInViewModel.getState();
+        String prevUsername = loggedInState.getUsername();
         loggedInState.setUsername("");
         loggedInViewModel.firePropertyChange();
 
@@ -46,13 +47,15 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         // 1. get the LoginState out of the appropriate View Model,
         // 2. set the username in the state to be the username of the user that just logged out,
         // 3. firePropertyChanged so that the View that is listening is updated.
-        LoginState loginState = loginViewModel.getState();
-        loginState.setUsername(response.getUsername());
+        this.viewManagerModel.setState(this.loginViewModel.getViewName());
+        LoginState loginState = new LoginState();
+        loginState.setUsername(prevUsername);
         loginState.setPassword("");
-        loginViewModel.firePropertyChange();
-        
-        // This code tells the View Manager to switch to the LoginView.
-        this.viewManagerModel.setState(loginViewModel.getViewName());
+        this.loginViewModel.setState(loginState);
+        this.loginViewModel.firePropertyChange();
+
+
+
         this.viewManagerModel.firePropertyChange();
     }
 }
